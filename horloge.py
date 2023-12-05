@@ -1,12 +1,18 @@
 import time
 import keyboard
 
+alarm = None 
+paused = False
+format_24h = True
+
 def set_alarm(tp):   
     return "{:02d}:{:02d}:{:02d}".format(tp[0], tp[1], tp[2])
 
-def afficher_heure(heure, format_24h=True):
+def afficher_heure(heure, format_24h):
+    if paused:
+        return
     if format_24h:
-        heure_format = "{:02d}:{:02d}:{:02d}".format(heure[3], heure[4], heure[5])
+        heure_format = "{:02d}:{:02d}:{:02d}   ".format(heure[3], heure[4], heure[5])
     else:
         heure_format = time.strftime("%I:%M:%S %p", heure)
     print(heure_format, end='\r')
@@ -16,9 +22,6 @@ def changer_format(format_24h):
 
 user_input = input("Voulez-vous définir une alarme ? (oui/non) ")
 
-alarm = None 
-paused = False
-format_24h = True
 
 if user_input.lower() == "oui":
     hour = int(input("Entrez l'heure de l'alarme (format 24 heures) : "))
@@ -34,14 +37,15 @@ while True:
 
     afficher_heure(heure, format_24h)
 
-    if keyboard.is_pressed('p'):
+    if keyboard.is_pressed('Enter'):
         if not paused:
-            input("Script paused. Press Enter to resume.")
+            print("Script paused. Press Enter to resume.")
             paused = True
         else:
             paused = False
 
-    if keyboard.is_pressed('f'):
+    if keyboard.is_pressed('m'):
         format_24h = changer_format(format_24h)
 
-    time.sleep(1)
+
+    time.sleep(0.1)
